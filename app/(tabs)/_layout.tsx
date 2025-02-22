@@ -1,28 +1,73 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
-
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React from "react";
+import { Platform, useWindowDimensions } from "react-native";
+import { Tabs } from "expo-router";
+import { ChartArea, House, User } from "lucide-react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { width } = useWindowDimensions();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarStyle: Platform.select({
           ios: {
-            position: 'absolute',
+            position: "absolute",
+            bottom: 55,
+            width: width / 2,
+            height: 60,
+            marginLeft: (width - width / 2) / 2,
+            borderRadius: 20,
+            display: "flex",
+            flexDirection:"row",
+            justifyContent: "center",
+            alignItems: "center",
+            rowGap: 6,
+          },
+          android:{
+            position: "absolute",
+            bottom: 25,
+            width: width / 2,
+            height: 60,
+            marginLeft: (width - width / 2) / 2,
+            borderRadius: 20,
+            display: "flex",
+            flexDirection:"row",
+            justifyContent: "center",
+            alignItems: "center",
+            rowGap: 6,
           },
         }),
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home'
+          tabBarIcon: ({ focused }) => (
+            <House name="home" color={focused ? "#000" : "#9CA3AF"} size={24} />
+          ),
+          tabBarLabel: () => null, 
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="categories"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <ChartArea name="categories" color={focused ? "#000" : "#9CA3AF"} size={24} />
+          ),
+          tabBarLabel: () => null, 
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <User name="user" color={focused ? "#000" : "#9CA3AF"} size={24} />
+          ),
+          tabBarLabel: () => null, 
+          headerShown: false,
         }}
       />
     </Tabs>
