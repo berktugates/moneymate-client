@@ -58,10 +58,10 @@ const AddPayment: React.FC<AddModal> = ({
           style={{
             transform: [{ translateY: panY }],
           }}
-          className="h-2/4 absolute bottom-0 bg-white rounded-t-3xl p-4 w-full shadow-slate-500 flex justify-evenly"
+          className={`${isSpending ? "h-1/2" : "h-2/5"} absolute bottom-0 bg-white rounded-t-3xl p-4 w-full shadow-slate-500 flex`}
         >
           <View className="w-16 h-1 bg-gray-300 rounded-full self-center mb-2" />
-          <Text className="text-center font-semibold text-3xl">
+          <Text className="text-center font-semibold text-3xl my-2">
             Add {isSpending ? "Spending" : "Income"}
           </Text>
           <View id="form">
@@ -77,7 +77,7 @@ const AddPayment: React.FC<AddModal> = ({
           <TouchableOpacity
             className={`${
               isSpending ? "bg-red-800" : "bg-green-800"
-            } h-12 flex items-center justify-center rounded-xl`}
+            } h-12 flex items-center justify-center rounded-xl my-4`}
           >
             <Text className="text-white text-center">Add</Text>
           </TouchableOpacity>
