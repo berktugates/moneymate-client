@@ -1,7 +1,7 @@
+import DeleteAccountConfirmationModal from "@/components/ui/DeleteAccountConfirmationModal";
 import SettingsCard from "@/components/ui/SettingsCard";
 import { router } from "expo-router";
 import {
-  ArrowRight,
   Earth,
   Handshake,
   Headset,
@@ -9,9 +9,8 @@ import {
   Shield,
   Star,
   Trash2,
-  UserPlus,
 } from "lucide-react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -21,10 +20,14 @@ import {
 } from "react-native";
 
 const settings: React.FC = () => {
+  const [isDeleteConfirmation, setIsDeleteConfirmation] =
+    useState<boolean>(false);
   return (
     <>
       <ScrollView className="bg-gray-800 h-full">
-        <SafeAreaView className="relative">
+        <SafeAreaView
+          className={`relative ${isDeleteConfirmation ? "opacity-50" : ""}`}
+        >
           <View id="root" className="p-4">
             <Text className="text-3xl text-white">Settings</Text>
             <View id="user-info" className="mt-4 border-b p-2 border-white">
@@ -76,9 +79,10 @@ const settings: React.FC = () => {
               <Text className="mt-2 mb-2 text-2xl font-semibold text-white">
                 Danger Zone
               </Text>
-              <View
-                id="settings-section"
+              <TouchableOpacity
+                id="delete-account-section"
                 className="flex flex-row justify-between items-center my-2"
+                onPress={() => setIsDeleteConfirmation(true)}
               >
                 <View className="flex flex-row items-center gap-x-2">
                   <Text className="text-white">
@@ -86,7 +90,7 @@ const settings: React.FC = () => {
                   </Text>
                   <Text className="text-red-500 text-lg">Delete Account</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={() => router.navigate("/SignIn")}
@@ -96,6 +100,9 @@ const settings: React.FC = () => {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
+        {isDeleteConfirmation && (
+            <DeleteAccountConfirmationModal setIsDeleteConfirmation={setIsDeleteConfirmation} />
+        )}
       </ScrollView>
     </>
   );
