@@ -4,8 +4,8 @@ import { Tabs } from "expo-router";
 import { ChartArea, House, User } from "lucide-react-native";
 
 export default function TabLayout() {
-  const { width } = useWindowDimensions();
-
+  const { width, height } = useWindowDimensions();
+console.log(height,"hei")
   return (
     <Tabs
       screenOptions={{
@@ -13,9 +13,9 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
-            bottom: 55,
+            bottom: height < 750 ? 35 : 55,
             width: width / 2,
-            height: 60,
+            height: height < 750 ? 50 :60,
             marginLeft: (width - width / 2) / 2,
             borderRadius: 20,
             display: "flex",
@@ -23,7 +23,7 @@ export default function TabLayout() {
             justifyContent: "center",
             alignItems: "center",
             rowGap: 6,
-          },
+           },
           android:{
             position: "absolute",
             bottom: 25,
@@ -36,7 +36,7 @@ export default function TabLayout() {
             justifyContent: "center",
             alignItems: "center",
             rowGap: 6,
-          },
+         },
         }),
       }}
     >
@@ -44,30 +44,29 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarIcon: ({ focused }) => (
-            <House name="home" color={focused ? "#000" : "#9CA3AF"} size={24} />
+            <House color={focused ? "#000" : "#9CA3AF"} size={24} />
           ),
-          tabBarLabel: () => null, 
-          headerShown: false,
+          tabBarLabel: () => null,
         }}
       />
       <Tabs.Screen
         name="categories"
         options={{
           tabBarIcon: ({ focused }) => (
-            <ChartArea name="categories" color={focused ? "#000" : "#9CA3AF"} size={24} />
+            <ChartArea color={focused ? "#000" : "#9CA3AF"} size={24} />
           ),
-          tabBarLabel: () => null, 
-          headerShown: false,
+          tabBarLabel: () => null,
+          headerShown:false
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           tabBarIcon: ({ focused }) => (
-            <User name="user" color={focused ? "#000" : "#9CA3AF"} size={24} />
+            <User color={focused ? "#000" : "#9CA3AF"} size={24} />
           ),
-          tabBarLabel: () => null, 
-          headerShown: false,
+          tabBarLabel: () => null,
+          headerShown:false
         }}
       />
     </Tabs>
