@@ -10,6 +10,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { PaymentContext } from "@/store/context/PaymentContext";
 import { IIncome, ISpending } from "@/models/IPayment";
+import TransactionsChart from "@/components/ui/TransactionsChart";
 
 export default function Home() {
   const { spendings, incomes, isSpending, setIsSpending } =
@@ -45,7 +46,7 @@ export default function Home() {
               <Text className="text-xl text-gray-200">Hi,</Text>
               <Text className="text-4xl font-bold text-gray-200">Berktug</Text>
             </View>
-            <View id="stats-options" className="flex mt-8 gap-y-4">
+            <View id="stats-options" className="flex mt-4 gap-y-4">
               <View id="stat-titles" className="flex flex-row gap-x-4">
                 <Text
                   onPress={() => setIsSpending(true)}
@@ -78,19 +79,26 @@ export default function Home() {
                   </Text>
                   {isSpending ? (
                     <Text className="text-sm text-gray-300">
-                      spent during this period
+                      total spend so far
                     </Text>
                   ) : (
                     <Text className="text-sm text-gray-300">
-                      income during this period
+                      total earned so far
                     </Text>
                   )}
                 </View>
               </View>
             </View>
-            {/* Buraya tablo gelecek */}
-            <View id="transactions" className="mt-8">
-              <Text className="text-3xl text-white font-bold mb-4">
+            {/* Buraya chart gelecek */}
+            <View id="chart" className="mt-4 bg-white rounded-xl p-4">
+              <View id="chart-header" className="mb-2">
+                <Text className="text-lg text-gray-500 font-semibold">Jun 23 - Jun 29</Text>
+                <Text className="text-4xl font-bold">$2510,7</Text>
+              </View>
+              <TransactionsChart/>
+            </View>
+            <View id="transactions" className="mt-4">
+              <Text className="text-3xl text-white font-bold ">
                 Last Transactions
               </Text>
               <SectionList
@@ -100,7 +108,7 @@ export default function Home() {
                     data: isSpending ? spendings : incomes,
                   },
                 ]}
-                keyExtractor={(item, index) => item.name + index}
+                keyExtractor={(item, index) => item.id + index}
                 renderItem={({ item }) => <Payment item={item} />}
                 renderSectionHeader={({ section: { title } }) => {
                   return (
