@@ -1,94 +1,71 @@
 import React from "react";
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Pressable,
   SafeAreaView,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { AppleButton } from "@invertase/react-native-apple-authentication";
+
 import { Link, router } from "expo-router";
 import Input from "@/components/ui/Input";
-import { Apple, LogIn } from "lucide-react-native";
+import Checkbox from "expo-checkbox";
+import Btn from "@/components/ui/Btn";
 
 const SignIn: React.FC = () => {
   return (
     <>
-      <KeyboardAvoidingView behavior="padding" className="">
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <SafeAreaView className="h-full relative bg-gray-800">
-            <View className="absolute bottom-0 h-4/5 bg-gray-600 rounded-t-3xl w-full p-2">
-              <View className="flex items-center py-3 px-6">
-                <View
-                  id="icon-view"
-                  className="bg-gray-100 p-2  mt-6 rounded-xl"
-                >
-                  <LogIn className="" color={"black"} size={40} />
-                </View>
-                <View
-                  id="titles-view"
-                  className="flex items-center gap-y-2 mt-6"
-                >
-                  <Text
-                    id="title"
-                    className="text-4xl font-semibold text-white"
-                  >
-                    Sign in with email
-                  </Text>
-                  <Text
-                    id="subtitle"
-                    className="text-wrap leading-6 px-8 text-white text-sm text-center italic "
-                  >
-                    Track your expenses, manage your budget, and take control of
-                    your finances with ease.
-                  </Text>
-                </View>
-                <View id="form" className="w-full mt-6">
-                  <Input title="Email" isPassword={false} />
-                  <Input title="Password" isPassword={true} />
-                  <Pressable id="forgot-password" className="flex items-end">
-                    <Text className="text-white">Forgot Password?</Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => router.navigate("/")}
-                    id="button"
-                    className="bg-white rounded-xl my-4 p-4"
-                  >
-                    <Text className="text-center text-lg font-semibold">
-                      Sign In
-                    </Text>
-                  </Pressable>
-                  <View
-                    id="other-options"
-                    className="mt-2 flex items-center gap-y-4"
-                  >
-                    <View className="flex-row items-center my-4">
-                      <View className="flex-1 h-px bg-gray-300" />
-                      <Text className="px-3 text-gray-300 text-sm">
-                        or sign in with
-                      </Text>
-                      <View className="flex-1 h-px bg-gray-300" />
-                    </View>
-                    {/* apple sign button gelecek */}
-                    <Pressable className="bg-white py-2 px-6 rounded-xl">
-                      <Apple color={"black"} />
-                    </Pressable>
-                    <Text className="text-white mt-4">
-                      Not a member?{" "}
-                      <Link
-                        href={"/SignUp"}
-                        className="underline font-semibold"
-                      >
-                        Create an account
-                      </Link>
-                    </Text>
-                  </View>
-                </View>
+      <KeyboardAvoidingView
+        behavior="padding"
+        className="flex-1 bg-gray-800 px-6 justify-center"
+      >
+        <SafeAreaView>
+          <View id="sign-up-header" className="flex items-center mt-8">
+            <Text className="text-white text-4xl tracking-wide">Sign In</Text>
+            <Text className="text-gray-400 my-4 text-center leading-relaxed tracking-wide">
+              Take control of your spending, track your expenses effortlessly,
+              and secure a brighter financial future today.{" "}
+            </Text>
+            <View id="social-buttons">
+              {/*               <AppleButton onPress={()=>console.log("first")} />
+               */}{" "}
+            </View>
+            <View id="or-divider" className="flex flex-row items-center my-4">
+              <View className="flex-1 h-px bg-gray-300" />
+              <Text className="mx-4 text-gray-500">OR</Text>
+              <View className="flex-1 h-px bg-gray-300" />
+            </View>
+            <View id="form" className="w-full flex gap-y-6">
+              <Input title={"Email"} />
+              <Input title={"Password"} isPassword={true} />
+              <View
+                id="forgot-password"
+                className="-mt-4 w-full flex items-end"
+              >
+                <Link className={"text-gray-200"} href={"/ForgotPassword"}>
+                  Forgot Password?
+                </Link>
+              </View>
+              <View id="buttons" className="mt-8">
+                <Btn
+                  title={"Log In"}
+                  bg={"gray-200"}
+                  p={6}
+                  color={"gray-800"}
+                  textSize={"lg"}
+                  onPress={()=>router.navigate("/")}
+                />
+                <Text className="text-gray-200 ps-2">
+                  Don't have an account?{" "}
+                  <Link href={"/SignUp"}>
+                    <Text className="underline">Sign Up</Text>
+                  </Link>
+                </Text>
               </View>
             </View>
-          </SafeAreaView>
-        </TouchableWithoutFeedback>
+          </View>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </>
   );

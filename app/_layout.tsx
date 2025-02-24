@@ -12,6 +12,9 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="SignIn" />
+            <Stack.Screen name="ForgotPassword" />
+            <Stack.Screen name="OTPScreen" />
+            <Stack.Screen name="ResetPassword" />
           <Stack.Screen name="SignUp" />
         </Stack>
       </PaymentProvider>
