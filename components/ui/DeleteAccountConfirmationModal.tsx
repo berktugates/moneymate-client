@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import Btn from "./Btn";
 
 interface IDeleteModal {
   setIsDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,7 +35,7 @@ const DeleteAccountConfirmationModal: React.FC<IDeleteModal> = ({
           <View className="flex-1 flex items-center justify-evenly px-6">
             <Image
               source={require("../../assets/images/deleteAccountModal.png")}
-            />{" "}
+            />
             {/* dark mode için beyaz ip bul. */}
             <View id="info">
               <Text className="text-center text-white text-6xl font-bold leading-snug tracking-wide">
@@ -46,9 +47,13 @@ const DeleteAccountConfirmationModal: React.FC<IDeleteModal> = ({
               </Text>
             </View>
             <View id="button" className="w-full">
-              <Pressable className="bg-red-200 border border-red-700 opacity-90 rounded-xl h-12 flex items-center justify-center">
-                <Text className="text-red-700">Delete</Text>
-              </Pressable>
+              <Btn
+                bg={"red-200"}
+                color={"red-700"}
+                p={"4"}
+                textSize={"base"}
+                title={"Delete"}
+              />
             </View>
           </View>
         </SafeAreaView>
