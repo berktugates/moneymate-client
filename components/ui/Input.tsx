@@ -19,21 +19,21 @@ const Input: React.FC <IInput>= ({ title, isPassword }) => {
       >
         <TextInput
         placeholder={title}
-        placeholderTextColor={"white"}
-          secureTextEntry={isPassword==true && isHiddenPassword ==true ? true : false}
+         placeholderTextColor={"#374151"}
+           secureTextEntry={isPassword==true && isHiddenPassword ==true ? true : false}
           onChangeText={(txt) => {
             if(title !== "Re-Password"){
                 setUser({ ...user, [title.toLowerCase()]: txt });
             }
           }}
-          className="bg-gray-800 border text-white border-gray-100 shadow-sm rounded-xl px-3 py-3.5 w-full"
+          className="bg-gray-200 rounded-xl p-5 "
         />
         {isPassword && (
-          <TouchableOpacity className="absolute right-3 top-3">
+          <TouchableOpacity className="absolute right-3 top-5">
             {isHiddenPassword ? (
-              <EyeClosed onPress={()=> setIsHiddenPassword(false)} color={"#fff"} width={24} height={24} />
+              <EyeClosed onPress={()=> setIsHiddenPassword(false)} color={"#374151"} width={24} height={24} />
             ) : (
-              <Eye onPress={()=> setIsHiddenPassword(true)} color={"#fff"} width={24} height={24} />
+              <Eye onPress={()=> setIsHiddenPassword(true)} color={"#374151"} width={24} height={24} />
             )}
           </TouchableOpacity>
         )}
