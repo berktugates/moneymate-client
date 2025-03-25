@@ -1,41 +1,92 @@
-import React from "react";
+import { useContext, useEffect } from "react";
 import { IIncome } from "@/models/IPayment";
+import axios from "axios";
+import { Alert } from "react-native";
+import useAuth from "./useAuth";
+import { PaymentContext } from "@/store/context/PaymentContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getToken } from "@/helpers/getToken";
 
-const useIncome:React.FC = () => {
+const useIncome = () => {
+  const { moneymateUser } = useAuth();
+  const { setIncomes, incomes } = useContext(PaymentContext);
 
-  const groupIncomesByDate = (
-    incomes: IIncome[],
-    filter: "1month" | "3months" | "6months" = "1month",
-    referenceDate: Date = new Date()
-  ) => {
-    const grouped: { title: string; data: IIncome[] }[] = [];
-    const filterDate = new Date(referenceDate);
+  useEffect(() => {
+    getIncomes();
+  }, []);
 
-    if (filter === "3months") {
-      filterDate.setMonth(filterDate.getMonth() - 3);
-    } else if (filter === "6months") {
-      filterDate.setMonth(filterDate.getMonth() - 6);
-    } else {
-      filterDate.setMonth(filterDate.getMonth() - 1);
+  const addIncomes = async (income: IIncome) => {
+    try {
+      const token = await getToken();
+      const response = await axios.post(
+        `http://127.0.0.1:1347/api/incomes`,
+        {
+          userId: moneymateUser.id,
+          description: income.source,
+          amount: income.amount,
+        },
+        {
+          headers: {
+            "moneymate-auth-token": token,
+          },
+        }
+      );
+      if (response.status === 200) {
+        Alert.alert("Success.", "Added income successfully.");
+      }
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-    const filteredIncomes = incomes.filter(
-      (income) => income.date < referenceDate && income.date >= filterDate
-    );
+  //filtering by date
+  const groupedData = incomes.reduce((acc, item) => {
+    const date = item.createdAt.split("T")[0];
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(item);
+    return acc;
+  }, {});
 
-    const dates = Array.from(new Set(filteredIncomes.map(income => income.date.toISOString().split('T')[0])));
-    dates.forEach(date => {
-      grouped.push({
-        title: date,
-        data: filteredIncomes.filter(income => income.date.toISOString().split('T')[0] === date)
+  const sectionsIncome = Object.keys(groupedData).map((date) => ({
+    title: date,
+    data: groupedData[date],
+  }));
+
+  const calculateTotalIncomes = incomes.reduce((total: number, i: IIncome) => {
+    return total + Number(i.amount);
+  }, 0);
+
+  const getIncomes = async () => {
+    try {
+      const token = await getToken();
+
+      if (!token) {
+        console.log("Token not found!");
+        return Alert.alert("Error", "Authentication token not found.");
+      }
+
+      const response = await axios.get("http://127.0.0.1:1347/api/incomes", {
+        headers: {
+          "moneymate-auth-token": token,
+        },
       });
-    });
 
-    return grouped; 
+      if (response.status === 200) {
+        setIncomes(response.data.reverse());
+      }
+    } catch (err) {
+      console.log("Error fetching incomes:", err);
+    }
   };
 
   return {
-    groupIncomesByDate
+    incomes,
+    addIncomes,
+    getIncomes,
+    sectionsIncome,
+    calculateTotalIncomes,
   };
 };
 export default useIncome;

@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Image,
   Modal,
@@ -8,7 +8,8 @@ import {
   Text,
   View,
 } from "react-native";
-import Btn from "./Btn";
+import useUser from "@/hooks/useAuth";
+import Btn from "../ui/Btn";
 
 interface IDeleteModal {
   setIsDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +18,10 @@ interface IDeleteModal {
 const DeleteAccountConfirmationModal: React.FC<IDeleteModal> = ({
   setIsDeleteConfirmation,
 }) => {
+  const {deleteAccount,moneymateUser,getUserInfo} = useUser();
+  useEffect(()=>{
+    getUserInfo()
+  },[])
   return (
     <>
       <Modal
@@ -53,6 +58,7 @@ const DeleteAccountConfirmationModal: React.FC<IDeleteModal> = ({
                 p={"4"}
                 textSize={"base"}
                 title={"Delete"}
+                onPress = {()=>deleteAccount(moneymateUser?.id)}
               />
             </View>
           </View>

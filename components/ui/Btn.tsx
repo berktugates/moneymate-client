@@ -7,6 +7,7 @@ interface IBtn {
     p:string;
     textSize:string;
     title:string;
+    onPress:()=>void
 }
 
 const Btn: React.FC<IBtn> = ({bg, color, p, textSize, title, onPress}) => {

@@ -2,7 +2,13 @@ import { ArrowRight } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 
-const SettingsCard: React.FC = ({title,icon}) => {
+interface ISettingsCard {
+  title:string;
+  icon : React.JSX.Element,
+  onPress: ()=>void
+}
+
+const SettingsCard: React.FC<ISettingsCard> = ({title,icon, onPress}) => {
   return (
     <>
       <View
@@ -13,7 +19,7 @@ const SettingsCard: React.FC = ({title,icon}) => {
           <Text className="text-white">{icon}</Text>
           <Text className="text-white text-lg">{title}</Text>
         </View>
-        <ArrowRight color={"#fff"} size={20} />
+        <ArrowRight onPress={()=> onPress()} color={"#fff"} size={20} />
       </View>
     </>
   );

@@ -1,86 +1,116 @@
-import { IIncome, ISpending } from "@/models/IPayment";
-import { useState } from "react";
+import { ISpending } from "@/models/IPayment";
+import { PaymentContext } from "@/store/context/PaymentContext";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { Alert } from "react-native";
+import useAuth from "./useAuth";
+import { getToken } from "@/helpers/getToken";
 
 const useSpending = () => {
   const [categoryName, setCategoryName] = useState<string>("");
+  const { setSpendings } = useContext(PaymentContext);
+  const { moneymateUser } = useAuth();
 
-  const groupByDate = (
-    spendings: ISpending[],
-    filter: "1month" | "3months" | "6months" = "1month",
-    referenceDate: Date = new Date()
-  ) => {
-    const grouped: { title: string; data: ISpending[] }[] = [];
-    const filterDate = new Date(referenceDate);
-
-    if (filter === "3months") {
-      filterDate.setMonth(filterDate.getMonth() - 3);
-    } else if (filter === "6months") {
-      filterDate.setMonth(filterDate.getMonth() - 6);
-    } else {
-      filterDate.setMonth(filterDate.getMonth() - 1);
-    }
-
-    // filteredSpendings&Incomes
-    const filteredSpendings = spendings.filter(
-      (spending) =>
-        spending.date < referenceDate &&
-        spending.date >= filterDate &&
-        (categoryName === "" || spending.category === categoryName) // categoryName'e göre filtreleme
-    );
-
-    filteredSpendings.forEach((spending) => {
-      const date = spending.date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-      });
-      const existingGroup = grouped.find((group) => group.title === date);
-
-      if (existingGroup) {
-        existingGroup.data.push(spending);
-      } else {
-        grouped.push({ title: date, data: [spending] });
+  const deleteSpending = async (id: number) => {
+    const token = await getToken();
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:1347/api/spendings/${id}`,
+        {
+          headers: {
+            "moneymate-auth-token": token,
+          },
+        }
+      );
+      if (response.status === 200) {
+        Alert.alert("Success", "Spending deleted successfully.");
       }
-    });
-
-    return grouped;
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Spending could not be  deleted.");
+    }
   };
 
-  const totalTransactions = (
-    transactions: ISpending[] | IIncome[],
-    filter: "1month" | "3months" | "6months" = "1month",
-    referenceDate: Date = new Date()
-  ) => {
-    const filterDate = new Date(referenceDate);
-
-    if (filter === "3months") {
-      filterDate.setMonth(filterDate.getMonth() - 3);
-    } else if (filter === "6months") {
-      filterDate.setMonth(filterDate.getMonth() - 6);
-    } else {
-      filterDate.setMonth(filterDate.getMonth() - 1);
-    }
-
-    const filteredTransactions = transactions.filter(
-      (transaction) =>
-        transaction.date >= filterDate && transaction.date < referenceDate
-    );
-
-    return filteredTransactions.reduce((total, num) => {
-      if ("price" in num) {
-        return total + num.price;
-      } else if ("amount" in num) {
-        return total + num.amount;
+  const updateSpending = async (id: number, spending: ISpending) => {
+    try {
+      const token = await getToken();
+      const response = await axios.put(
+        `http://127.0.0.1:1347/api/spendings/${id}`,
+        {
+          userId: moneymateUser.id,
+          name: spending.name,
+          categoryId: spending.category,
+          company: spending.company,
+          price: spending.price,
+        },
+        {
+          headers: {
+            "moneymate-auth-token": token,
+          },
+        }
+      );
+      if (response.status === 200) {
+        await getSpendings();
+        Alert.alert("Success", "Spending updated successfull");
       }
-      return total;
-    }, 0);
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Spending could not be  updated.");
+    }
+  };
+
+  const addSpending = async (spending: ISpending) => {
+    try {
+      const token = await getToken();
+      const response = await axios.post(
+        `http://127.0.0.1:1347/api/spendings`,
+        {
+          userId: moneymateUser.id,
+          description: spending.description,
+          categoryId: spending.categoryId,
+          amount: spending.amount,
+        },
+        {
+          headers: {
+            "moneymate-auth-token": token,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        await getSpendings();
+        Alert.alert("Success", "Spending added successfully.");
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Spending could not be  added.");
+    }
+  };
+
+  const getSpendings = async () => {
+    try {
+      const token = await getToken();
+      const response = await axios.get(`http://127.0.0.1:1347/api/spendings`, {
+        headers: {
+          "moneymate-auth-token": token,
+        },
+      });
+      if (response.status === 200) {
+        setSpendings(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Spendings could not be get.");
+    }
   };
 
   return {
-    groupByDate,
-    totalTransactions,
     categoryName,
     setCategoryName,
+    addSpending,
+    getSpendings,
+    updateSpending,
+    deleteSpending,
   };
 };
 export default useSpending;

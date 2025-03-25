@@ -5,7 +5,6 @@ import { ChartArea, House, User } from "lucide-react-native";
 
 export default function TabLayout() {
   const { width, height } = useWindowDimensions();
-console.log(height,"hei")
   return (
     <Tabs
       screenOptions={{

@@ -1,15 +1,19 @@
 export interface ISpending {
-  id:number;
-  name: string;
-  category: string;
-  company?: string;
-  price: number;
-  date: Date;
+  id?:number;
+  userId?:number;
+  description:string;
+  categoryId: number;
+  amount: number;
 }
 
 export interface IIncome {
-  id:number;
+  id?:number;
   source: string;
   amount: number;
-  date: Date;
+}
+
+export interface ICategory {
+  id?:number;
+  userId?:number;
+  name:string;
 }

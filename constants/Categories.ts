@@ -10,7 +10,7 @@ export const categories = [
   },
   {
     id: 3,
-    title: "Grocerie",
+    title: "Grocery",
     limit: 400,
   },
   {

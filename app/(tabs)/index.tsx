@@ -1,38 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Payment from "@/components/ui/Payment";
-import {
-  SafeAreaView,
-  ScrollView,
-  SectionList,
-  Text,
-  View,
-} from "react-native";
+import { SafeAreaView, ScrollView, Text, View, FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { PaymentContext } from "@/store/context/PaymentContext";
-import { IIncome, ISpending } from "@/models/IPayment";
 import TransactionsChart from "@/components/ui/TransactionsChart";
+import useUser from "@/hooks/useAuth";
+import useIncome from "@/hooks/useIncome";
 
 export default function Home() {
-  const { spendings, incomes, isSpending, setIsSpending } =
-    useContext(PaymentContext);
+  const { incomes, isSpending, setIsSpending } = useContext(PaymentContext);
 
-  const [t, setT] = useState(0);
+  const { moneymateUser } = useUser();
+  const { calculateTotalIncomes } = useIncome();
 
-  useEffect(() => {
-    if (isSpending) {
-      setT(
-        spendings.reduce((total: number, s: ISpending) => {
-          return total + s.price;
-        }, 0)
-      );
-    } else {
-      setT(
-        incomes.reduce((total: number, i: IIncome) => {
-          return total + i.amount;
-        }, 0)
-      );
-    }
-  }, [isSpending, spendings, incomes]);
+  const lastFiveIncomes = incomes.length < 5 ? incomes : incomes.slice(0, 5);
 
   return (
     <>
@@ -44,7 +25,9 @@ export default function Home() {
           <View id="root" className="p-4">
             <View id="greetings">
               <Text className="text-xl text-gray-200">Hi,</Text>
-              <Text className="text-4xl font-bold text-gray-200">Berktug</Text>
+              <Text className="text-4xl font-bold text-gray-200">
+                {moneymateUser ? moneymateUser.name : "User"}
+              </Text>
             </View>
             <View id="stats-options" className="flex mt-4 gap-y-4">
               <View id="stat-titles" className="flex flex-row gap-x-4">
@@ -75,7 +58,7 @@ export default function Home() {
                       isSpending ? "text-red-500" : "text-green-500"
                     }`}
                   >
-                    ${t.toFixed(2).replace(".", ",")}
+                    ${calculateTotalIncomes.toFixed(2)}
                   </Text>
                   {isSpending ? (
                     <Text className="text-sm text-gray-300">
@@ -92,35 +75,28 @@ export default function Home() {
             {/* Buraya chart gelecek */}
             <View id="chart" className="mt-4 bg-white rounded-xl p-4">
               <View id="chart-header" className="mb-2">
-                <Text className="text-lg text-gray-500 font-semibold">Jun 23 - Jun 29</Text>
+                <Text className="text-lg text-gray-500 font-semibold">
+                  Jun 23 - Jun 29
+                </Text>
                 <Text className="text-4xl font-bold">$2510,7</Text>
               </View>
-              <TransactionsChart/>
+              <TransactionsChart />
             </View>
             <View id="transactions" className="mt-4">
-              <Text className="text-3xl text-white font-bold ">
+              <Text className="text-3xl text-white font-bold">
                 Last Transactions
               </Text>
-              <SectionList
-                sections={[
-                  {
-                    title: isSpending ? "Spendings" : "Incomes",
-                    data: isSpending ? spendings : incomes,
-                  },
-                ]}
-                keyExtractor={(item, index) => item.id + index}
+              <FlatList
+                data={isSpending ? lastFiveIncomes : lastFiveIncomes}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => <Payment item={item} />}
-                renderSectionHeader={({ section: { title } }) => {
-                  return (
-                    <Text
-                      id="date-title"
-                      className="text-white text-2xl my-1.5 font-semibold"
-                    >
-                      {title}
-                    </Text>
-                  );
-                }}
-                contentInsetAdjustmentBehavior="automatic"
+                ListHeaderComponent={() => (
+                  <Text className="text-white text-2xl my-1.5 font-semibold">
+                    {isSpending ? "Spendings" : "Incomes"}
+                  </Text>
+                )}
+                scrollEnabled={false}
+                nestedScrollEnabled
               />
             </View>
           </View>

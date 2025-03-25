@@ -25,7 +25,7 @@ const TransactionsChart: React.FC = () => {
     <>
       <BarChart
         data={barData}
-        width={width - 100}
+        width={width - 98}
         barBorderTopLeftRadius={6}
         barBorderTopRightRadius={6}
         dashWidth={4}

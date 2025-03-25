@@ -1,14 +1,14 @@
-import DeleteAccountConfirmationModal from "@/components/ui/DeleteAccountConfirmationModal";
+import useUser from "@/hooks/useAuth";
+import DeleteAccountConfirmationModal from "@/components/modals/DeleteAccountConfirmationModal";
+import LanguageSettingsCard from "@/components/ui/LanguageSettingsCard";
 import SettingsCard from "@/components/ui/SettingsCard";
-import { router } from "expo-router";
 import {
-  Earth,
   Handshake,
   Headset,
-  Settings,
   Shield,
   Star,
   Trash2,
+  User,
 } from "lucide-react-native";
 import React, { useState } from "react";
 import {
@@ -18,10 +18,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import PrivacyNoticeModal from "@/components/modals/PrivacyNoticeModal";
 
 const settings: React.FC = () => {
   const [isDeleteConfirmation, setIsDeleteConfirmation] =
     useState<boolean>(false);
+  const [isPrivacyModal, setIsPrivacyModal] = useState<boolean>(false);
+
+  const { moneymateUser, logOut } = useUser();
+
   return (
     <>
       <ScrollView className="bg-gray-800 h-full">
@@ -31,9 +36,9 @@ const settings: React.FC = () => {
           <View id="root" className="p-4">
             <Text className="text-3xl text-white">Settings</Text>
             <View id="user-info" className="mt-4 border-b p-2 border-white">
-              <Text className="text-2xl text-white">Berktug Berke Ates</Text>
+              <Text className="text-2xl text-white">{moneymateUser?.name}</Text>
               <Text className="text-white my-1.5 italic">
-                contact@berktug.com
+                {moneymateUser?.email}
               </Text>
             </View>
             <View id="general" className="p-2 border-b border-white">
@@ -42,12 +47,9 @@ const settings: React.FC = () => {
               </Text>
               <SettingsCard
                 title={"Account Settings"}
-                icon={<Settings color={"#fff"} size={20} />}
+                icon={<User color={"#fff"} size={20} />}
               />
-              <SettingsCard
-                title={"App Language"}
-                icon={<Earth color={"#fff"} size={20} />}
-              />
+              <LanguageSettingsCard />
             </View>
             <View id="help&feedback" className="p-2 border-b border-white">
               <Text className="mt-2 mb-2 text-2xl font-semibold text-white">
@@ -69,6 +71,7 @@ const settings: React.FC = () => {
               <SettingsCard
                 title={"Privacy Notice"}
                 icon={<Shield color={"#fff"} size={20} />}
+                onPress={()=> setIsPrivacyModal(true)}
               />
               <SettingsCard
                 title={"Terms of Use"}
@@ -93,7 +96,7 @@ const settings: React.FC = () => {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              onPress={() => router.navigate("/SignIn")}
+              onPress={() => logOut()}
               className="mx-auto mt-8 border border-white w-full p-2 rounded-lg"
             >
               <Text className="text-xl text-white text-center">Log Out</Text>
@@ -101,7 +104,15 @@ const settings: React.FC = () => {
           </View>
         </SafeAreaView>
         {isDeleteConfirmation && (
-            <DeleteAccountConfirmationModal setIsDeleteConfirmation={setIsDeleteConfirmation} />
+          <DeleteAccountConfirmationModal
+            setIsDeleteConfirmation={setIsDeleteConfirmation}
+          />
+        )}
+        {isPrivacyModal && (
+          <PrivacyNoticeModal
+            isPrivacyModal={isPrivacyModal}
+            setIsPrivacyModal={setIsPrivacyModal}
+          />
         )}
       </ScrollView>
     </>
