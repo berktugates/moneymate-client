@@ -19,11 +19,13 @@ import {
   View,
 } from "react-native";
 import PrivacyNoticeModal from "@/components/modals/PrivacyNoticeModal";
+import TermsModal from "@/components/modals/TermsModal";
 
 const settings: React.FC = () => {
   const [isDeleteConfirmation, setIsDeleteConfirmation] =
     useState<boolean>(false);
   const [isPrivacyModal, setIsPrivacyModal] = useState<boolean>(false);
+  const [isTermsModal, setIsTermsModal] = useState<boolean>(false);
 
   const { moneymateUser, logOut } = useUser();
 
@@ -37,7 +39,7 @@ const settings: React.FC = () => {
             <Text className="text-3xl text-white">Settings</Text>
             <View id="user-info" className="mt-4 border-b p-2 border-white">
               <Text className="text-2xl text-white">{moneymateUser?.name}</Text>
-              <Text className="text-white my-1.5 italic">
+              <Text className="text-white my-1.5">
                 {moneymateUser?.email}
               </Text>
             </View>
@@ -71,11 +73,12 @@ const settings: React.FC = () => {
               <SettingsCard
                 title={"Privacy Notice"}
                 icon={<Shield color={"#fff"} size={20} />}
-                onPress={()=> setIsPrivacyModal(true)}
+                onPress={() => setIsPrivacyModal(true)}
               />
               <SettingsCard
                 title={"Terms of Use"}
                 icon={<Handshake color={"#fff"} size={20} />}
+                onPress={()=> setIsTermsModal(true)}
               />
             </View>
             <View id="danger-zone" className="p-2">
@@ -112,6 +115,12 @@ const settings: React.FC = () => {
           <PrivacyNoticeModal
             isPrivacyModal={isPrivacyModal}
             setIsPrivacyModal={setIsPrivacyModal}
+          />
+        )}
+        {isTermsModal && (
+          <TermsModal
+          isTermsModal={isTermsModal}
+          setIsTermsModal = {setIsTermsModal}
           />
         )}
       </ScrollView>
